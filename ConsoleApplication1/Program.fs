@@ -1,6 +1,4 @@
 ﻿
-module program
-
 type 'a Tree = Node of 'a * ('a Tree list)
 type Extent = (float*float) list
 
@@ -13,7 +11,7 @@ let rec merge = function
     | (ps,[]) -> ps
     | ((p,_)::ps, (_,q)::qs) -> (p,q)::merge(ps,qs);;
 
-let mergelist es = List.fold(fun acc x -> merge ((merge x), acc)) [] es;;
+let mergelist es = List.fold(fun acc x -> merge ( x, acc)) [] es;;
 
 let rmax (p:float, q:float) = if p > q then p else q;;
 
@@ -41,3 +39,21 @@ let fitlistr es = List.rev (fitlistr' [] (List.rev es));;
 let mean (x,y) = (x+y)/2.0;;
 
 let fitlist es = List.map mean (List.zip (fitlistl es) (fitlistr es));;
+
+let rec design' (Node(label, subtrees)) = 
+    let (trees,extents) = List.unzip (List.map design' subtrees)
+    let positions = fitlist extents
+    let ptrees = List.map movetree (List.zip (trees) (positions))
+    let pextents = List.map moveextent (List.zip (extents) (positions))
+    let resultextent = (0.0, 0.0) :: mergelist pextents
+    let resulttree = Node((label, 0.0), ptrees)
+    (resulttree, resultextent);;
+
+let design tree = fst (design' tree);;
+
+//Tests
+
+let a = Node("A", []);;
+let b = Node("B", []);;
+let c = Node("C", [a;b]);;
+
