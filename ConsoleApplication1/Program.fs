@@ -51,9 +51,15 @@ let rec design' (Node(label, subtrees)) =
 
 let design tree = fst (design' tree);;
 
+
+
 //Tests
 
 let a = Node("A", []);;
 let b = Node("B", []);;
 let c = Node("C", [a;b]);;
+let d = Node("D", [a;b;c]);;
+
+//let test1 = design c;;
+//let test2 = design d;;
 
