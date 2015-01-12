@@ -51,7 +51,28 @@ let rec design' (Node(label, subtrees)) =
 
 let design tree = fst (design' tree);;
 
+//Aux function for getTreePosition
+let rec getTreePosition' = function
+    | [] -> 0.0
+    | ((_,y)::re) -> let value = getTreePosition' re  
+                     if y < value then y else value
 
+//Gets the float of the leftmost position in tree
+let getTreePosition tree = 
+    let re = snd (design' tree)
+    getTreePosition' re;;                       
+
+//Adjusts the treeposition so the leftmost position will be placed at point 10
+let adjustTreePosition tree = let pos = (getTreePosition tree)
+                              if pos > 10.0 then movetree ((design tree),(pos)) else movetree ((design tree),-(-10.0+pos));;
+
+let rec listToString vpos = function
+    | [] -> ""
+    | x::xs -> listToString vpos xs + treeToString vpos x
+
+and treeToString vpos = function
+    | Node ((a, hpos:float),[]) -> (string (int (hpos*10.0))) + " " + (string (int vpos)) + " lineto \n (" + a + ") show \n"
+    | Node ((a, hpos:float),xs) -> (string (int (hpos*10.0))) + " " + (string (int vpos)) + " lineto \n (" + a + ") show \n" + listToString (vpos+10.0) xs;; 
 
 //Tests
 
@@ -59,7 +80,16 @@ let a = Node("A", []);;
 let b = Node("B", []);;
 let c = Node("C", [a;b]);;
 let d = Node("D", [a;b;c]);;
+let d1 = Node ("D", [d;b;c]);;
 
-//let test1 = design c;;
-//let test2 = design d;;
+let designtest1 = design c;;
+let designtest2 = design d;;
+let designtest3 = design a;;
 
+//let gtptest1 = getTreePosition d1;;
+
+//let atptest1 = adjustTreePosition d1;;
+
+let ttstest1 = treeToString 0.0 (designtest3);;
+let ttstest2 = treeToString 0.0 (designtest1);;
+let ttstest3 = treeToString 0.0 (designtest2);;
