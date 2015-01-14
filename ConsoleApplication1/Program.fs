@@ -1,8 +1,13 @@
 ﻿
+module Program
+
+open AST
+
 type 'a Tree = Node of 'a * ('a Tree list)
 type Extent = (float*float) list
 
 let fontsize = 10.0;;
+let maxWidth = 40.0*0.6;;
 
 let movetree (Node((label, x), subtrees), x' : float) = Node((label, x+x'), subtrees);;
 
@@ -68,21 +73,25 @@ let getTreePosition tree =
 let adjustTreePosition tree = let pos = (getTreePosition tree)
                               if pos > 10.0 then movetree ((design tree),(pos)) else movetree ((design tree),-(-10.0+pos));;
 
-let moveToParent (ppos,vpos) = (string ppos) + " " + (string (vpos+fontsize)) + " moveto \n"
+let moveToParent (ppos,vpos) = (string ppos) + " " + (string (vpos+fontsize-2.0)) + " moveto \n"
 
-let moveToCharStart (ppos,vpos) = (string ppos) + " " + (string (vpos-fontsize)) + " moveto \n"
+let moveToCharStart (ppos,vpos) = (string (ppos)) + " " + (string (vpos-fontsize)) + " moveto \n"
 
 let rec listToString (ppos,vpos) = function
     | [] -> ""
     | x::xs -> listToString (ppos,vpos) xs + treeToString (ppos,vpos) x
 
 and treeToString (ppos,vpos) = function
-    | Node ((a, hpos:float),[]) -> moveToParent (ppos,vpos) + (string (ppos+(hpos*10.0))) + " " + (string (vpos)) + " lineto \n" + moveToCharStart ((ppos+(hpos*10.0)), vpos) + "(" + a + ") show \n"
-    | Node ((a, hpos:float),xs) -> moveToParent (ppos,vpos) + (string (ppos+(hpos*10.0))) + " " + (string (vpos)) + " lineto \n" + moveToCharStart ((ppos+(hpos*10.0)), vpos) + "(" + a + ") show \n" + listToString (ppos+hpos*10.0,(vpos-fontsize*2.0)) xs;; 
+    | Node ((a, hpos:float),[]) -> moveToParent (ppos+(maxWidth/2.0),vpos) + (string (ppos+hpos+(maxWidth/2.0))) + " " + (string (vpos)) + " lineto \n" + moveToCharStart ((ppos+(hpos)), vpos) + "(" + (sprintf "%A" a) + ") show \n"
+    | Node ((a, hpos:float),xs) -> moveToParent (ppos+(maxWidth/2.0),vpos) + (string (ppos+hpos+(maxWidth/2.0))) + " " + (string (vpos)) + " lineto \n" + moveToCharStart ((ppos+(hpos)), vpos) + "(" + (sprintf "%A" a) + ") show \n" + listToString (ppos+hpos,(vpos-fontsize*2.0)) xs;; 
 
 let callStringTree initpv = function
-    | Node ((a, initph),xs) -> moveToParent (initph*10.0,initpv) + "(" + a + ") show \n" + listToString (initph*10.0, (initpv-fontsize)) xs;;
+    | Node ((a, initph),xs) -> moveToParent (initph,initpv+2.0) + "(" + (sprintf "%A" a) + ") show \n" + listToString (initph, (initpv)) xs;;
 
+let rec multiplyTree (Node((n,p),l)) = Node((n,p*(maxWidth)), List.map (fun x -> (multiplyTree x)) l);; 
+
+let createFinalTree tree = let atp = adjustTreePosition tree
+                           callStringTree (800.0) atp;;
 //Tests
 
 let a = Node("A", []);;
@@ -98,12 +107,15 @@ let designtest3 = design a;;
 
 //let gtptest1 = getTreePosition d1;;
 
-let atptest0 = adjustTreePosition d;;
-let atptest1 = adjustTreePosition d1;;
+//let atptest0 = adjustTreePosition d;;
+//let atptest1 = adjustTreePosition d1;;
 let atptest2 = adjustTreePosition e;;
+
+let bum = multiplyTree atptest2;;
 
 //let ttstest1 = treeToString (0.0,0.0) (designtest3);;
 //let ttstest2 = treeToString (0.0,0.0) (designtest1);;
 //let ttstest3 = callStringTree (10.0) (atptest0);;
-let ttstest4 = callStringTree (800.0) (atptest1);;
-let ttstest5 = callStringTree (800.0) (atptest2);;
+
+let ttstest4 = callStringTree (800.0) (bum);;
+//let ttstest5 = callStringTree (800.0) (atptest2);;
