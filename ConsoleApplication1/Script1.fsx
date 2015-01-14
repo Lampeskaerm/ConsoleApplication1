@@ -2,10 +2,12 @@
 #load "AST.fs"
 #load "Program.fs"
 #load "ASTToTree.fs"
+#load "ToPS.fs"
 
 open AST
 open Program
 open ASTToTree
+open ToPS
 
 
 //Tests
@@ -19,20 +21,20 @@ let test1 = createFinalTree(stm(Block
                                         PrintLn (String "Sum:");
                                         PrintLn (Apply ("toString",[ContOf (Var "sum")]))])));;
 
-let test2 = 
-     createFinalTree(stm(Block
-                            ([VarDec ("x",Int 4); VarDec ("output",Int 1);
-                              RecDec
-                                (ProcDec
-                                   ("fac",["n"; "o"],
-                                    If1
-                                      (Apply ("<>",[ContOf (Var "n"); Int 0]),
-                                       Seq
-                                         [Asg
-                                            (Var "o",Apply ("*",[ContOf (Var "n"); ContOf (Var "o")]));
-                                          Asg (Var "n",Apply ("-",[ContOf (Var "n"); Int 1]));
-                                          Call ("fac",[Var "n"; Var "o"])])))],
-                             Seq
-                               [Call ("fac",[Var "x"; Var "output"]);
-                                PrintLn (Apply ("toString",[ContOf (Var "x")]));
-                                PrintLn (Apply ("toString",[ContOf (Var "output")]))])));;
+//let test2 = 
+//     createFinalTree(stm(Block
+//                            ([VarDec ("x",Int 4); VarDec ("output",Int 1);
+//                              RecDec
+//                                (ProcDec
+//                                   ("fac",["n"; "o"],
+//                                    If1
+//                                      (Apply ("<>",[ContOf (Var "n"); Int 0]),
+//                                       Seq
+//                                         [Asg
+//                                            (Var "o",Apply ("*",[ContOf (Var "n"); ContOf (Var "o")]));
+//                                          Asg (Var "n",Apply ("-",[ContOf (Var "n"); Int 1]));
+//                                          Call ("fac",[Var "n"; Var "o"])])))],
+//                             Seq
+//                               [Call ("fac",[Var "x"; Var "output"]);
+//                                PrintLn (Apply ("toString",[ContOf (Var "x")]));
+//                                PrintLn (Apply ("toString",[ContOf (Var "output")]))])));;
