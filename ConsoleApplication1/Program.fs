@@ -68,18 +68,20 @@ let getTreePosition tree =
 let adjustTreePosition tree = let pos = (getTreePosition tree)
                               if pos > 10.0 then movetree ((design tree),(pos)) else movetree ((design tree),-(-10.0+pos));;
 
-let moveToParent (ppos,vpos) = (string (int ppos)) + " " + (string (vpos-fontsize)) + " moveto \n"
+let moveToParent (ppos,vpos) = (string ppos) + " " + (string (vpos+fontsize)) + " moveto \n"
+
+let moveToCharStart (ppos,vpos) = (string ppos) + " " + (string (vpos-fontsize)) + " moveto \n"
 
 let rec listToString (ppos,vpos) = function
     | [] -> ""
     | x::xs -> listToString (ppos,vpos) xs + treeToString (ppos,vpos) x
 
 and treeToString (ppos,vpos) = function
-    | Node ((a, hpos:float),[]) -> moveToParent (ppos,vpos) + (string (int (ppos+(hpos*10.0)))) + " " + (string (int vpos)) + " lineto \n(" + a + ") show \n"
-    | Node ((a, hpos:float),xs) -> moveToParent (ppos,vpos) + (string (int (ppos+(hpos*10.0)))) + " " + (string (int vpos)) + " lineto \n(" + a + ") show \n" + listToString (ppos+hpos*10.0,(vpos+fontsize*2.0)) xs;; 
+    | Node ((a, hpos:float),[]) -> moveToParent (ppos,vpos) + (string (ppos+(hpos*10.0))) + " " + (string (vpos)) + " lineto \n" + moveToCharStart ((ppos+(hpos*10.0)), vpos) + "(" + a + ") show \n"
+    | Node ((a, hpos:float),xs) -> moveToParent (ppos,vpos) + (string (ppos+(hpos*10.0))) + " " + (string (vpos)) + " lineto \n" + moveToCharStart ((ppos+(hpos*10.0)), vpos) + "(" + a + ") show \n" + listToString (ppos+hpos*10.0,(vpos-fontsize*2.0)) xs;; 
 
 let callStringTree initpv = function
-    | Node ((a, initph),xs) -> moveToParent (initph*10.0,initpv) + "(" + a + ") show \n" + listToString (initph*10.0, (initpv+fontsize)) xs;;
+    | Node ((a, initph),xs) -> moveToParent (initph*10.0,initpv) + "(" + a + ") show \n" + listToString (initph*10.0, (initpv-fontsize)) xs;;
 
 //Tests
 
@@ -103,5 +105,5 @@ let atptest2 = adjustTreePosition e;;
 //let ttstest1 = treeToString (0.0,0.0) (designtest3);;
 //let ttstest2 = treeToString (0.0,0.0) (designtest1);;
 //let ttstest3 = callStringTree (10.0) (atptest0);;
-let ttstest4 = callStringTree (10.0) (atptest1);;
-let ttstest5 = callStringTree (10.0) (atptest2);;
+let ttstest4 = callStringTree (800.0) (atptest1);;
+let ttstest5 = callStringTree (800.0) (atptest2);;
