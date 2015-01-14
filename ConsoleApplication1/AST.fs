@@ -1,5 +1,4 @@
-﻿
-module AST
+﻿module AST
 
 type Exp = | Int of int 
            | Bool of bool 
@@ -28,4 +27,4 @@ and Dec  = | VarDec of string * Exp
            | RecDec of Dec
            | ArrayDec of string * Exp * Exp
 
-
+;;

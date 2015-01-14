@@ -34,4 +34,6 @@ and dec d =
     | VarDec (s,e) -> Node ("VarDec", [exp (String s); exp e])
     | ProcDec (s,ls,st) -> Node ("ProcDec", [exp (String s)] @ (List.fold(fun acc x -> (exp (String x))::acc) [] ls) @ [stm st])
     | RecDec de -> Node ("RecDec", [dec de])
-    | ArrayDec (s,e1,e2) -> Node ("ArrayDec", [exp (String s);exp e1; exp e2])
+    | ArrayDec (s,e1,e2) -> Node ("ArrayDec", [exp (String s);exp e1; exp e2]);;
+
+;;

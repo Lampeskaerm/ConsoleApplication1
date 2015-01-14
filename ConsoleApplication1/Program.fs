@@ -17,14 +17,14 @@ let rec merge = function
     | (ps,[]) -> ps
     | ((p,_)::ps, (_,q)::qs) -> (p,q)::merge(ps,qs);;
 
-let mergelist es = List.foldBack(fun acc s -> merge (acc,s)) es []
+let mergelist es = List.foldBack(fun acc s -> merge (acc,s)) es [];;
 
 let rmax (p:float, q:float) = if p > q then p else q;;
 
 let rec fit xs ys = 
     match (xs,ys) with
     | (((_,p)::ps),((q,_)::qs)) -> rmax(fit ps qs, p - q + 1.0)
-    | _ -> 0.0
+    | _ -> 0.0;;
     
 let rec fitlistl' acc es = 
     match (acc,es) with
@@ -60,8 +60,8 @@ let design tree = fst (design' tree);;
 //Aux function for getTreePosition
 let rec getTreePosition' = function
     | [] -> 0.0
-    | ((_,y)::re) -> let value = getTreePosition' re  
-                     if y < value then y else value
+    | ((y,_)::re) -> let value = getTreePosition' re  
+                     if y < value then y else value;;
 
 //Gets the float of the leftmost position in tree
 let getTreePosition tree = 
@@ -70,7 +70,7 @@ let getTreePosition tree =
 
 //Adjusts the treeposition so the leftmost position will be placed at point 10
 let adjustTreePosition tree = let pos = (getTreePosition tree)
-                              if pos > 10.0 then movetree ((design tree),(pos)) else movetree ((design tree),-(-10.0+pos));;
+                              if pos > 0.0 then (design tree) else movetree ((design tree),-(pos));;
 
 //Tests
 
@@ -90,3 +90,5 @@ let designtest3 = design a;;
 //let atptest0 = adjustTreePosition d;;
 //let atptest1 = adjustTreePosition d1;;
 let atptest2 = adjustTreePosition e;;
+
+;;

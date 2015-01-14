@@ -3,6 +3,10 @@
 open Program
 open System.IO
 
+
+System.IO.Directory.SetCurrentDirectory __SOURCE_DIRECTORY__;;
+
+
 let rec calcMaxWidthList n = function
     | [] -> n
     | x::xs -> if calcMaxWidthList n xs > calcMaxWidth n x then calcMaxWidthList n xs else calcMaxWidth n x
@@ -14,7 +18,7 @@ and calcMaxWidth n = function
                    
 //let rec calcMaxWidth (Node (a,l)) = List.fold (fun acc (Node(a1,l)) -> if (String.length (sprintf "%A" a1)) > acc then (String.length (sprintf "%A" a1)) else acc) 0 l;;
 
-let moveToParent (ppos,vpos) = (string ppos) + " " + (string (vpos+fontsize-2.0)) + " moveto \n"
+let moveToParent (ppos,vpos) = (string ppos) + " " + (string (vpos+fontsize-2.0)) + " moveto \n";;
 
 let calculateCharPos mw pos a = let diff = (mw - (fontsize*0.6*(float (String.length (sprintf "%A" a)))))
                                 if diff <= 0.0 then (string pos) else (string (pos+(diff/2.0)));;
@@ -38,16 +42,16 @@ let rec multiplyTree mw (Node((n,p),l)) = Node((n,p*(mw)), List.map (fun x -> (m
 
 let printToFile f s = File.WriteAllText (f,s);;
 
-let preString = "%!\n1 1 scale\n/Courier\n" + string fontsize + " selectfont\nnewpath\n"
+let preString = "%!\n1 1 scale\n/Courier\n" + string fontsize + " selectfont\nnewpath\n";;
 
-let endString = "stroke\nshowpage"
+let endString = "stroke\nshowpage";;
 
-System.IO.Directory.SetCurrentDirectory __SOURCE_DIRECTORY__;;
 let createFinalTree tree = let maxWidth = (float (calcMaxWidth 0 tree))*fontsize*0.6
                            let atp = adjustTreePosition tree
                            let mt = multiplyTree maxWidth atp
                            let finalString = preString + (callStringTree maxWidth (800.0) mt) + endString
-                           printToFile "output.ps" finalString;;
+                           printToFile "output.ps" finalString
+                           finalString;;
 
 //Tests
 
@@ -59,4 +63,6 @@ let createFinalTree tree = let maxWidth = (float (calcMaxWidth 0 tree))*fontsize
 
 //let ttstest4 = callStringTree (800.0) (bum);;
 //let ttstest5 = callStringTree (800.0) (atptest2);;
+
+;;
 
