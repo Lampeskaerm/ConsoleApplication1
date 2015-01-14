@@ -7,7 +7,6 @@ type 'a Tree = Node of 'a * ('a Tree list)
 type Extent = (float*float) list
 
 let fontsize = 20.0;;
-let maxWidth = 350.0*0.6;;
 
 let movetree (Node((label, x), subtrees), x' : float) = Node((label, x+x'), subtrees);;
 

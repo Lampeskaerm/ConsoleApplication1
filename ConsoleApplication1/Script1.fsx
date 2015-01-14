@@ -20,6 +20,15 @@ let test1 = createFinalTree(stm(Block
                                         Asg (Var "sum",Apply ("sumArray",[ContOf (Var "a")]));
                                         PrintLn (String "Sum:");
                                         PrintLn (Apply ("toString",[ContOf (Var "sum")]))])));;
+let width = calcMaxWidth 0 (stm(Block
+                                    ([VarDec ("rng",Int 100); VarDec ("len",Int 10);
+                                      ArrayDec ("a",ContOf (Var "len"),Int 1); VarDec ("sum",Int 0)],
+                                     Seq
+                                       [Asg (Var "a",Apply ("randomArray",[Var "rng"; Var "len"]));
+                                        Call ("printArray",[ContOf (Var "a")]);
+                                        Asg (Var "sum",Apply ("sumArray",[ContOf (Var "a")]));
+                                        PrintLn (String "Sum:");
+                                        PrintLn (Apply ("toString",[ContOf (Var "sum")]))])));;
 
 //let test2 = 
 //     createFinalTree(stm(Block
